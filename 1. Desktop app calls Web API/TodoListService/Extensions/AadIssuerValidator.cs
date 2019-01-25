@@ -36,12 +36,15 @@ namespace Microsoft.AspNetCore.Authentication
 
             // Build the valid tenanted issuers
             List<string> allValidIssuers = new List<string>();
-
-            IEnumerable<string> validIssuers = validationParameters.ValidIssuers;
+            
+            IEnumerable<string> validIssuers = validationParameters.ValidIssuers;          
             if (validIssuers != null)
             {
                 allValidIssuers.AddRange(validIssuers.Select(i => TenantedIssuer(i, tenantId)));
             }
+
+            // hack to include v2 endpoint
+            allValidIssuers.Add(TenantedIssuer("https://login.microsoftonline.com/{tenantid}/v2.0", tenantId));
 
             string validIssuer = validationParameters.ValidIssuer;
             if (validIssuer != null)

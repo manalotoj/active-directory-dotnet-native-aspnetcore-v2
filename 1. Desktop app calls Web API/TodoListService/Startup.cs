@@ -50,17 +50,18 @@ namespace TodoListService
             services.Configure<JwtBearerOptions>(AzureADDefaults.JwtBearerAuthenticationScheme, options =>
             {
 			    // This is an Azure AD v2.0 Web API
-                options.Authority += "/v2.0";
+                //options.Authority += "/v2.0";
 				
 				// The valid audiences are both the Client ID (options.Audience) and api://{ClientID}
                 options.TokenValidationParameters.ValidAudiences = new string[] { options.Audience, $"api://{options.Audience}" };
 
                 // Instead of using the default validation (validating against a single tenant, as we do in line of business apps),
                 // we inject our own multitenant validation logic (which even accepts both V1 and V2 tokens)
-                options.TokenValidationParameters.ValidateIssuer = false;//.IssuerValidator = AadIssuerValidator.ValidateAadIssuer;
+                //options.TokenValidationParameters.ValidateIssuer = false;//.IssuerValidator = AadIssuerValidator.ValidateAadIssuer;
 
+                options.TokenValidationParameters.IssuerValidator = AadIssuerValidator.ValidateAadIssuer;
                 // If you want to debug, or just understand the JwtBearer events, uncomment the following line of code
-                // options.Events = JwtBearerMiddlewareDiagnostics.Subscribe(options.Events);
+                options.Events = JwtBearerMiddlewareDiagnostics.Subscribe(options.Events);
             });
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
